@@ -1,0 +1,260 @@
+@import "~react-image-gallery/styles/css/image-gallery.css";
+
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3 {
+  margin-bottom: 16px;
+}
+
+p {
+  margin-bottom: 8px;
+}
+
+.title {
+  font-size: 2.5rem;  /* Increase the font size */
+  text-align: center; /* Center the text */
+  margin-top: 20px;   /* Add some top margin */
+  margin-bottom: 30px; /* Space between title and content */
+  color: #333;        /* A softer black color for the title */
+  font-weight: bold;  /* Bold text */
+}
+
+/* Add a soft gradient to your title for a more modern look */
+.title::after {
+  content: "";
+  display: block;
+  margin: 20px auto 0 auto;
+  width: 50%;         /* Width of the gradient line */
+  height: 3px;        /* Thickness of the gradient line */
+  background: linear-gradient(to right, rgba(0, 123, 255, 0), #007bff, rgba(0, 123, 255, 0));
+}
+
+/* Flexbox Container for Activities and Stats */
+.container {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+/* Individual Containers for Activities and Stats */
+.container .stats, .container .activities {
+  padding: 20px;
+  height: 60vh;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.container .stats {
+  flex: 0.3;  /* 40% of the container */
+  border-right: 1px solid #ddd;
+}
+
+.container .activities {
+  flex: 0.7;  /* 60% of the container */
+  position: relative;
+}
+
+.leaflet-container {
+  width: 100%;
+  height: 60vh;
+}
+
+.image-gallery .image-gallery-image img {
+  max-width: 50% !important;
+  max-height: 50% !important;
+  margin: 0 auto;
+  display: block;
+}
+.image-gallery .image-gallery-image {
+  text-align: center; /* Center the image */
+  max-width: 50% !important;
+  margin: 0 auto; /* Center the parent container */
+}
+
+/* Login box styling */
+.login-box {
+  width: 300px;
+  padding: 40px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #ffffff;
+  box-shadow: 0px 0px 10px 0px #000000;
+  border-radius: 8px;
+}
+.login-box h1 {
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+.login-box button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background-color: #FF5722;
+  color: #ffffff;
+  font-size: 18px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-box button:hover {
+  background-color: #E64A19;
+}
+.login-box body {
+  background: linear-gradient(45deg, #FFB6C1, #FF69B4);
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Error styling */
+.has-error {
+  color: red;
+  background-color: #ffd6d6;
+  padding: 10px;
+  border: 1px solid red;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+/* Styling for the 'Plots' header */
+.plots h2 {
+  font-size: 2rem;     /* Increase the font size */
+  text-align: center;  /* Center the text */
+  margin-top: 40px;    /* Add some top margin */
+  margin-bottom: 20px; /* Space between header and content */
+  color: #333;      /* A blue color to match your gradient */
+  font-weight: bold;   /* Bold text */
+}
+
+/* You can also add some gradient to your plots header, like the title */
+.plots h2::after {
+  content: "";
+  display: block;
+  margin: 20px auto 0 auto;
+  width: 30%;         /* Width of the gradient line */
+  height: 2px;        /* Thickness of the gradient line */
+  background: linear-gradient(to right, #f1a9ee, #77adf5f1, #c5ff9e);
+}
+
+.subhead {
+  font-size: 2rem;     /* Increase the font size */
+  text-align: center;  /* Center the text */
+  margin-top: 40px;    /* Add some top margin */
+  margin-bottom: 20px; /* Space between header and content */
+  color: #333;      /* A blue color to match your gradient */
+  font-weight: bold;   /* Bold text */
+}
+.subhead::after {
+  content: "";
+  display: block;
+  margin: 20px auto 0 auto;
+  width: 30%;         /* Width of the gradient line */
+  height: 2px;        /* Thickness of the gradient line */
+  background: linear-gradient(to right, #f1a9ee, #77adf5f1, #c5ff9e);
+
+}
+
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background-color: rgba(255, 255, 255, 0.9); /* You can adjust the background color and opacity as needed */
+}
+
+.loading-screen i.fa-spinner {
+  font-size: 2em;
+  margin-bottom: 20px;
+}
+
+
+
+/* Responsive Design */
+@media screen and (max-width: 700px) {
+  .subhead {
+      font-size: 1.2em;
+  }
+}
+
+/* Responsiveness: On smaller screens, adjust the layout */
+@media screen and (max-width: 768px) {
+  body {
+      font-size: 0.9rem;
+  }
+
+  h1 {
+      font-size: 1.8rem;
+  }
+
+  h2 {
+      font-size: 1.4rem;
+  }
+
+  h3 {
+      font-size: 1.1rem;
+  }
+
+  .container .stats, .container .activities {
+      flex: 1; /* Resetting to even division for mobile views */
+  }
+}
+
+@media screen and (min-width: 1100px) {
+  .image-gallery .image-gallery-image img {
+    max-width: 20% !important;
+    max-height: 20% !important;
+  }
+  .image-gallery .image-gallery-image {
+    max-width: 70vh !important;
+  }
+  .container .stats {
+    flex: .2;
+    position: relative;
+  }
+  .container .activities {
+    flex: 0.8;  
+    position: relative;
+  }
+}
+@media screen and (max-width: 1400px) {
+  /* Adjustments for screens with a width of 1400px or less */
+  .container .stats, .container .activities {
+    height: auto; /* Adjust as necessary, maybe you want a specific value */
+  }
+
+  .leaflet-container {
+    height: 60vh; /* Adjust as desired */
+  }
+}
+@media screen and (max-height: 700px) {
+  /* Adjustments for screens with a height of 700px or less */
+  .container {
+    flex-direction: column; /* Stack stats and activities vertically */
+  }
+
+  .container .stats, .container .activities {
+    width: 100%; /* Each section takes full width when stacked */
+    padding: 10px; /* Adjust padding for smaller height screens */
+  }
+
+  
+}
