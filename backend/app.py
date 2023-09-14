@@ -21,9 +21,9 @@ app = Flask(__name__)
 app.secret_key = "abc_123"
 CORS(app)
 
-CLIENT_ID = os.getenv("CLIENT_ID")
-CLIENT_SECRET = os.getenv("CLIENT_SECRET")
-REFRESH_TOKEN = os.getenv("REFRESH_TOKEN")
+CLIENT_ID = os.environ.get('CLIENT_ID')
+CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
+REFRESH_TOKEN = os.environ.get('REFRESH_TOKEN')
 AUTH_LINK = "https://www.strava.com/oauth/token"
 
 activity_cache = []
@@ -51,6 +51,7 @@ def strava_auth():
             # Store the access token in the user's session
             session['access_token'] = access_token
             session.modified = True
+            print(session)
             # Return just the access token to frontend
             return jsonify({"access_token": access_token})
         else:
@@ -58,12 +59,22 @@ def strava_auth():
     except Exception as e:
         return jsonify({"error": str(e)})
 
-@app.route('/callback', methods=['POST'])
+@app.route('/callback', methods=['POST', 'OPTIONS'])
 def callback():
+    if request.method == 'OPTIONS':
+        # Preflight request. Reply successfully:
+        resp = Response("OK", content_type='application/json')
+        resp.headers['Access-Control-Allow-Origin'] = '*'
+        resp.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
+        resp.headers['Access-Control-Allow-Headers'] = 'content-type'
+        return resp
+
     data = request.json
+    if not data:
+        return jsonify({"error": "Expected JSON"}), 400
+
     code = data.get('code')
 
-    # Check if code exists
     if not code:
         return jsonify({"error": "No code provided"}), 400
 
@@ -81,25 +92,28 @@ def callback():
 
         if response.ok and "access_token" in response_data:
             access_token = response_data.get('access_token')
-            
-            # Store the access token in the user's session
+
             session['access_token'] = access_token
             session.modified = True
-            
+
+            session['access_token'] = access_token
+
             # Initialize StravaStatsAPI and get stat and plot data from it
             strava = StravaStatsAPI(session['access_token'])
             all_activities = (strava.fetch_activities())
             latlong = all_activities[0]['start_latlng']
+            print(latlong)
             df = pd.DataFrame(all_activities)
             all_activities = strava.format_activities(all_activities)
+            #print(all_activities[0])
             stats = strava.running_stats(df)
-            
+
             plots = []
             plots.append(strava.plot_paces(df))
             plots.append(strava.plot_average_speed_over_time(df))
             plots.append(strava.plot_distance_over_time(df))
             plots.append(strava.plot_runs_by_weekday(df))
-            
+
             return jsonify({"message": "Authentication successful", "access_token": access_token, "activities": all_activities,  "stats": stats, "plots": plots, "latlong": latlong})
         else:
             return jsonify(response_data), 400

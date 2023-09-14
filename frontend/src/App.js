@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import './App.css';
 import { MapContainer, TileLayer, Polyline, Popup } from 'react-leaflet';
-import axios from 'axios';
 import polyline from '@mapbox/polyline';
 import LoginPage from './pages/LoginPage';
 import CallbackManager from './components/CallbackManager';
@@ -15,10 +14,9 @@ function App() {
   const [activities, setActivities] = useState([]);
   const [stats, setStats] = useState(null);
   const [plots, setPlots] = useState(null);
-  const [hasDataFetchError, setHasDataFetchError] = useState(false);
+  const [, setHasDataFetchError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [latlong, setLatLong] = useState(null)
-  
 
   useEffect(() => {
     async function fetchStravaData() {
@@ -46,7 +44,7 @@ function App() {
     }
     fetchStravaData();
 
-    
+
   }, []);
 
   const images = plots?.map(plot => ({
@@ -98,7 +96,7 @@ function App() {
               <h1 className='title'>Strava Stats for Runners  🏃‍♀️🏃‍♂️💨</h1>
               <h2 className='subhead'>General Stats & Interactive Map</h2>
               <div className='container'>
-                
+
                 <div className='stats'>
                   {stats && (
                     <div>
@@ -147,7 +145,7 @@ function App() {
                     </MapContainer>
                 )}
                 </div>
-    
+
               </div>
               <div className='plots'>
               {plots && (

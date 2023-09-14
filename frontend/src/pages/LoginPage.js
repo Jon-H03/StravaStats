@@ -6,13 +6,14 @@ const LoginPage = ({ setIsLoading, setIsAuthenticating }) => {  // Accept setIsL
     setIsLoading(true);  // Set the isLoading state to true when attempting to authenticate
     setIsAuthenticating(true);
     const clientID = "110708";
-    const redirectURI = `http://stravastats.s3-website-us-west-1.amazonaws.com/callback`; 
+    const redirectURI = `https://d1ixblvuats0xl.cloudfront.net/callback`; 
     const responseType = "code";
     const scope = "activity:read_all"; 
 
     const authURL = `https://www.strava.com/oauth/authorize?client_id=${clientID}&redirect_uri=${redirectURI}&response_type=${responseType}&scope=${scope}`;
 
     // Redirect the user to the Strava OAuth page
+    console.log("Redirecting to Strava for authentication...");
     window.location.href = authURL;
 
     // NOTE: The actual setIsLoading(false) call will be handled in the callback or after authentication is completed/failed, likely in your App component or CallbackManager.
