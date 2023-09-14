@@ -18,70 +18,38 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [latlong, setLatLong] = useState(null)
 
-  useEffect(() => {
-    async function fetchStravaData() {
-      try {      
-
-        if (activities && stats && plots && latlong) {
-          setActivities(activities);
-          setStats(stats);
-          setPlots(plots);
-          setLatLong(latlong);
-          setIsAuthenticated(true);
-        } else {
-          setIsAuthenticated(false);
-          setHasDataFetchError(true);
-          setIsAuthenticating(false);
-        }
-        setIsLoading(false);
-      } catch (error) {
-        console.error('Error fetching Strava data:', error);
-        setHasDataFetchError(true);
-        setIsAuthenticated(false);
-        setIsAuthenticating(false);
-        setIsLoading(false)
-      }
-    }
-    fetchStravaData();
-
-
-  }, []);
-
-  const images = plots?.map(plot => ({
-    original: `data:image/png;base64,${plot}`,
-    thumbnail: `data:image/png;base64,${plot}`,
-  })) || [];
-
   const handleStatsReceived = (stats, plots, activities, latlong) => {
-    // Set the stats and plots data in the state
     setStats(stats);
     setPlots(plots);
     setActivities(activities);
     setLatLong(latlong);
+    setIsAuthenticated(true);
+    setIsAuthenticating(false);
+    setIsLoading(false);
   };
+
   if (isLoading) {
-      return (
-          <div className="loading-screen">
-              <i className="fas fa-spinner fa-spin"></i>
-              <p>Loading...</p>
-          </div>
-      );
+    return (
+      <div className="loading-screen">
+        <i className="fas fa-spinner fa-spin"></i>
+        <p>Loading...</p>
+      </div>
+    );
   }
 
   if (isAuthenticating) {
-        return (
-            <div className="loading-screen">
-                <i className="fas fa-spinner fa-spin"></i>
-                <p>Authenticating...</p>
-            </div>
-      );
+    return (
+      <div className="loading-screen">
+        <i className="fas fa-spinner fa-spin"></i>
+        <p>Authenticating...</p>
+      </div>
+    );
   }
-
 
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <LoginPage setIsLoading={setIsLoading} setIsAuthenticating={setIsAuthenticated}/>} />
+        <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <LoginPage setIsLoading={setIsLoading} setIsAuthenticating={setIsAuthenticating}/>} />
         <Route
           path="/callback"
           element={
