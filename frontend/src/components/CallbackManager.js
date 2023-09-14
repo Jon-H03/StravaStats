@@ -11,7 +11,7 @@ function CallbackManager({ onAuthenticated, onStatsReceived }) {
             const code = queryParams.get('code');
             console.log(code);
             try {
-                const response = await axios.post('http://localhost:5000/callback', { code: code });
+                const response = await axios.post(`http://stravastatsbackend.eba-akb9vbnz.us-west-1.elasticbeanstalk.com/callback`, { code: code });
                 console.log(response);
                 if (response.data && response.data.access_token) {
                     onAuthenticated();

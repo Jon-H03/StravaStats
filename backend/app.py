@@ -51,7 +51,6 @@ def strava_auth():
             # Store the access token in the user's session
             session['access_token'] = access_token
             session.modified = True
-            print(session)
             # Return just the access token to frontend
             return jsonify({"access_token": access_token})
         else:
@@ -59,22 +58,12 @@ def strava_auth():
     except Exception as e:
         return jsonify({"error": str(e)})
 
-@app.route('/callback', methods=['POST', 'OPTIONS'])
+@app.route('/callback', methods=['POST'])
 def callback():
-    if request.method == 'OPTIONS':
-        # Preflight request. Reply successfully:
-        resp = Response("OK", content_type='application/json')
-        resp.headers['Access-Control-Allow-Origin'] = '*'
-        resp.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
-        resp.headers['Access-Control-Allow-Headers'] = 'content-type'
-        return resp
-
     data = request.json
-    if not data:
-        return jsonify({"error": "Expected JSON"}), 400
-
     code = data.get('code')
 
+    # Check if code exists
     if not code:
         return jsonify({"error": "No code provided"}), 400
 
@@ -93,19 +82,16 @@ def callback():
         if response.ok and "access_token" in response_data:
             access_token = response_data.get('access_token')
             
+            # Store the access token in the user's session
             session['access_token'] = access_token
             session.modified = True
             
-            session['access_token'] = access_token
-
             # Initialize StravaStatsAPI and get stat and plot data from it
             strava = StravaStatsAPI(session['access_token'])
             all_activities = (strava.fetch_activities())
             latlong = all_activities[0]['start_latlng']
-            print(latlong)
             df = pd.DataFrame(all_activities)
             all_activities = strava.format_activities(all_activities)
-            #print(all_activities[0])
             stats = strava.running_stats(df)
             
             plots = []
@@ -120,34 +106,6 @@ def callback():
     except Exception as e:
         return jsonify({"error": str(e)})
 
-
-#@app.route('/api/stats', methods=['GET'])
-#def get_stats():
-#    access_token = request.args.get('access_token')
-#    print("Stats SESSION: ", access_token)
-#    strava = StravaStatsAPI(session['access_token'])
-#    if not activity_cache:
-#        activity_cache.extend(strava.fetch_activities())
-#    df = pd.DataFrame(activity_cache)
-#    stats = strava.running_stats(df)
-#    return jsonify({"status": "success", "data": stats})
-#
-#@app.route('/api/plots', methods=['GET'])
-#def get_all_plots():
-#    access_token = request.args.get('access_token')
-#    print("PLOTS SESSION: ", access_token)
-#    api = StravaStatsAPI(session['access_token'])
-#    if not activity_cache:
-#        activity_cache.extend(api.fetch_activities())
-#    df = pd.DataFrame(activity_cache)
-#
-#    plots = {
-#        'paces': api.plot_paces(df),
-#        'average_speed_over_time': api.plot_average_speed_over_time(df),
-#        'distance_over_time': api.plot_distance_over_time(df),
-#        'runs_by_weekday': api.plot_runs_by_weekday(df)
-#    }
-#    return jsonify({"status": "success", "data": plots})
 
 
 class StravaStatsAPI:
@@ -240,14 +198,16 @@ class StravaStatsAPI:
         total_distance = round(total_distance/1609, 2) # divide by 1609 to convert meters to miles
         total_time_moving = round(total_time_moving/3600, 2) # divide by 3600 to convert seconds to hours
         total_elevation_gain = round(total_elevation_gain, 2) 
-        avg_speed_all_time = round(total_distance/total_time_moving, 2) # multiply by 1.609 to convert km to mile
-        avg_pace = round(60/avg_speed_all_time, 2)
-        avg_dist_per_run = round((total_distance/total_runs), 2)
+        avg_speed_all_time = round(total_distance/total_time_moving, 2) if total_time_moving else 0 # multiply by 1.609 to convert km to mile
+        avg_pace = round(60/avg_speed_all_time, 2) if avg_speed_all_time else 0
+        avg_dist_per_run = round((total_distance/total_runs), 2) if total_runs else 0
+        avg_elev_gain = round((total_elevation_gain/total_runs), 2) if total_runs else 0
         fastest_speed = round(fastest_speed, 2)
         longest_streak = self.longest_activity_streak(df)
         farthest_run = round(farthest_run/1609, 2)
         shortest_run = round(shortest_run/1609, 2)
         max_altitude = round(max_altitude, 2)
+
 
         return {
             "total_runs": total_runs,
@@ -257,7 +217,7 @@ class StravaStatsAPI:
             "avg_speed_all_time": avg_speed_all_time,
             "avg_pace": avg_pace,
             "avg_dist_per_run": avg_dist_per_run,
-            "avg_elev_gain": round((total_elevation_gain/total_runs), 2),
+            "avg_elev_gain": avg_elev_gain,
             "fastest_speed": fastest_speed,
             "longest_streak": longest_streak,
             "farthest_run": farthest_run,
@@ -309,7 +269,7 @@ class StravaStatsAPI:
             if activity['type'] == 'Run':
                 distance_miles = activity['distance'] * 0.00062137
                 moving_time_minutes = activity['moving_time'] / 60.0
-                pace = moving_time_minutes / distance_miles
+                pace = moving_time_minutes / distance_miles 
                 rounded_pace = round(pace)
                 miles_by_pace[rounded_pace] += distance_miles
 
@@ -452,4 +412,4 @@ class StravaStatsAPI:
 # Add other routes for your plots as well, maybe sending back just the data needed to create the plots on the frontend
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=80)

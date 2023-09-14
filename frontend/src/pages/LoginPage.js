@@ -6,7 +6,7 @@ const LoginPage = ({ setIsLoading, setIsAuthenticating }) => {  // Accept setIsL
     setIsLoading(true);  // Set the isLoading state to true when attempting to authenticate
     setIsAuthenticating(true);
     const clientID = "110708";
-    const redirectURI = "http://localhost:3000/callback"; 
+    const redirectURI = `http://stravastats.s3-website-us-west-1.amazonaws.com/callback`; 
     const responseType = "code";
     const scope = "activity:read_all"; 
 

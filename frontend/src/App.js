@@ -18,7 +18,7 @@ function App() {
   const [hasDataFetchError, setHasDataFetchError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [latlong, setLatLong] = useState(null)
-  const activities_link = "https://www.strava.com/api/v3/athlete/activities";
+  
 
   useEffect(() => {
     async function fetchStravaData() {
