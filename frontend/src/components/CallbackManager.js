@@ -16,7 +16,6 @@ function CallbackManager({ onAuthenticated, onStatsReceived }) {
                 if (response.data && response.data.access_token) {
                     onAuthenticated();
 
-                    // Pass the stats and plots data to the parent component
                     
                     onStatsReceived(response.data.stats, response.data.plots, response.data.activities, response.data.latlong);
 
