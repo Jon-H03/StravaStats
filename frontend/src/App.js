@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import './App.css';
 import { MapContainer, TileLayer, Polyline, Popup } from 'react-leaflet';
@@ -14,7 +14,6 @@ function App() {
   const [activities, setActivities] = useState([]);
   const [stats, setStats] = useState(null);
   const [plots, setPlots] = useState(null);
-  const [, setHasDataFetchError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [latlong, setLatLong] = useState(null)
 
@@ -27,6 +26,11 @@ function App() {
     setIsAuthenticating(false);
     setIsLoading(false);
   };
+
+  const images = plots?.map(plot => ({
+    original: `data:image/png;base64,${plot}`,
+    thumbnail: `data:image/png;base64,${plot}`,
+  })) || [];
 
   if (isLoading) {
     return (
