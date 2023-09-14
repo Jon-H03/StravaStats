@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import './App.css';
 import { MapContainer, TileLayer, Polyline, Popup } from 'react-leaflet';
+import axios from 'axios';
 import polyline from '@mapbox/polyline';
 import LoginPage from './pages/LoginPage';
 import CallbackManager from './components/CallbackManager';
@@ -14,46 +15,75 @@ function App() {
   const [activities, setActivities] = useState([]);
   const [stats, setStats] = useState(null);
   const [plots, setPlots] = useState(null);
+  const [hasDataFetchError, setHasDataFetchError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [latlong, setLatLong] = useState(null)
+  const activities_link = "https://www.strava.com/api/v3/athlete/activities";
 
-  const handleStatsReceived = (stats, plots, activities, latlong) => {
-    setStats(stats);
-    setPlots(plots);
-    setActivities(activities);
-    setLatLong(latlong);
-    setIsAuthenticated(true);
-    setIsAuthenticating(false);
-    setIsLoading(false);
-  };
+  useEffect(() => {
+    async function fetchStravaData() {
+      try {      
+
+        if (activities && stats && plots && latlong) {
+          setActivities(activities);
+          setStats(stats);
+          setPlots(plots);
+          setLatLong(latlong);
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+          setHasDataFetchError(true);
+          setIsAuthenticating(false);
+        }
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error fetching Strava data:', error);
+        setHasDataFetchError(true);
+        setIsAuthenticated(false);
+        setIsAuthenticating(false);
+        setIsLoading(false)
+      }
+    }
+    fetchStravaData();
+
+
+  }, []);
 
   const images = plots?.map(plot => ({
     original: `data:image/png;base64,${plot}`,
     thumbnail: `data:image/png;base64,${plot}`,
   })) || [];
 
+  const handleStatsReceived = (stats, plots, activities, latlong) => {
+    // Set the stats and plots data in the state
+    setStats(stats);
+    setPlots(plots);
+    setActivities(activities);
+    setLatLong(latlong);
+  };
   if (isLoading) {
-    return (
-      <div className="loading-screen">
-        <i className="fas fa-spinner fa-spin"></i>
-        <p>Loading...</p>
-      </div>
-    );
+      return (
+          <div className="loading-screen">
+              <i className="fas fa-spinner fa-spin"></i>
+              <p>Loading...</p>
+          </div>
+      );
   }
 
   if (isAuthenticating) {
-    return (
-      <div className="loading-screen">
-        <i className="fas fa-spinner fa-spin"></i>
-        <p>Authenticating...</p>
-      </div>
-    );
+        return (
+            <div className="loading-screen">
+                <i className="fas fa-spinner fa-spin"></i>
+                <p>Authenticating...</p>
+            </div>
+      );
   }
+
 
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <LoginPage setIsLoading={setIsLoading} setIsAuthenticating={setIsAuthenticating}/>} />
+        <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <LoginPage setIsLoading={setIsLoading} setIsAuthenticating={setIsAuthenticated}/>} />
         <Route
           path="/callback"
           element={
