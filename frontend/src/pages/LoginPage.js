@@ -6,7 +6,7 @@ const LoginPage = ({ setIsLoading, setIsAuthenticating }) => {  // Accept setIsL
     setIsLoading(true);  // Set the isLoading state to true when attempting to authenticate
     setIsAuthenticating(true);
     const clientID = "110708";
-    const redirectURI = `https://d1ixblvuats0xl.cloudfront.net/callback`; 
+    const redirectURI = `https://poetic-capybara-cdaed3.netlify.app/callback`; 
     const responseType = "code";
     const scope = "activity:read_all"; 
 

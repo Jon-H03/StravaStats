@@ -15,20 +15,22 @@ function App() {
   const [activities, setActivities] = useState([]);
   const [stats, setStats] = useState(null);
   const [plots, setPlots] = useState(null);
-  const [hasDataFetchError, setHasDataFetchError] = useState(false);
+  const [, setHasDataFetchError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [latlong, setLatLong] = useState(null)
-  const activities_link = "https://www.strava.com/api/v3/athlete/activities";
+  const netlifyFunctionURL = '/.netlify/functions/fetchStravaData';  // Netlify functions are accessible under the /.netlify/functions/{function_name} path by default.
 
   useEffect(() => {
     async function fetchStravaData() {
-      try {      
+      try {
+        const response = await axios.get(netlifyFunctionURL);  // Call the Netlify function
+        const data = response.data;
 
-        if (activities && stats && plots && latlong) {
-          setActivities(activities);
-          setStats(stats);
-          setPlots(plots);
-          setLatLong(latlong);
+        if (data) {
+          setActivities(data.activities);
+          setStats(data.stats);
+          setPlots(data.plots);
+          setLatLong(data.latlong);
           setIsAuthenticated(true);
         } else {
           setIsAuthenticated(false);
@@ -44,9 +46,8 @@ function App() {
         setIsLoading(false)
       }
     }
+
     fetchStravaData();
-
-
   }, []);
 
   const images = plots?.map(plot => ({
