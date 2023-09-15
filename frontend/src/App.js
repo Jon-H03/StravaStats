@@ -13,7 +13,7 @@ function App() {
   const [stats, setStats] = useState(null);
   const [plots, setPlots] = useState(null);
   const [latlong, setLatLong] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (!isAuthenticated) {
