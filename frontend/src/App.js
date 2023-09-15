@@ -10,7 +10,7 @@ import ImageGallery from 'react-image-gallery';
 
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [activities, setActivities] = useState([]);
   const [stats, setStats] = useState(null);
