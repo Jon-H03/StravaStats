@@ -28,6 +28,13 @@ AUTH_LINK = "https://www.strava.com/oauth/token"
 
 activity_cache = []
 
+@app.route('/auth/status', methods=['GET'])
+def auth_status():
+    if 'access_token' in session:
+        return jsonify({"authenticated": True})
+    return jsonify({"authenticated": False})
+
+
 @app.route('/')
 def root():
     return "Hello, this is the root page."

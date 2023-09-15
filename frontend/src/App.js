@@ -2,83 +2,35 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import './App.css';
 import { MapContainer, TileLayer, Polyline, Popup } from 'react-leaflet';
-import axios from 'axios';
-import polyline from '@mapbox/polyline';
+import ImageGallery from 'react-image-gallery';
 import LoginPage from './pages/LoginPage';
 import CallbackManager from './components/CallbackManager';
-import ImageGallery from 'react-image-gallery';
-
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [activities, setActivities] = useState([]);
   const [stats, setStats] = useState(null);
   const [plots, setPlots] = useState(null);
-  const [, setHasDataFetchError] = useState(false);
+  const [latlong, setLatLong] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [latlong, setLatLong] = useState(null)
-  const netlifyFunctionURL = '/.netlify/functions/fetchStravaData';  // Netlify functions are accessible under the /.netlify/functions/{function_name} path by default.
 
   useEffect(() => {
-    async function fetchStravaData() {
-      try {
-        const response = await axios.get(netlifyFunctionURL);  // Call the Netlify function
-        const data = response.data;
-
-        if (data) {
-          setActivities(data.activities);
-          setStats(data.stats);
-          setPlots(data.plots);
-          setLatLong(data.latlong);
-          setIsAuthenticated(true);
-        } else {
-          setIsAuthenticated(false);
-          setHasDataFetchError(true);
-          setIsAuthenticating(false);
-        }
-        setIsLoading(false);
-      } catch (error) {
-        console.error('Error fetching Strava data:', error);
-        setHasDataFetchError(true);
-        setIsAuthenticated(false);
-        setIsAuthenticating(false);
-        setIsLoading(false)
-      }
+    if (!isAuthenticated) {
+      setIsLoading(false);
     }
-
-    fetchStravaData();
-  }, []);
-
-  const images = plots?.map(plot => ({
-    original: `data:image/png;base64,${plot}`,
-    thumbnail: `data:image/png;base64,${plot}`,
-  })) || [];
+  }, [isAuthenticated]);
 
   const handleStatsReceived = (stats, plots, activities, latlong) => {
-    // Set the stats and plots data in the state
     setStats(stats);
     setPlots(plots);
     setActivities(activities);
     setLatLong(latlong);
   };
-  if (isLoading) {
-      return (
-          <div className="loading-screen">
-              <i className="fas fa-spinner fa-spin"></i>
-              <p>Loading...</p>
-          </div>
-      );
-  }
 
-  if (isAuthenticating) {
-        return (
-            <div className="loading-screen">
-                <i className="fas fa-spinner fa-spin"></i>
-                <p>Authenticating...</p>
-            </div>
-      );
-  }
+  const images = plots?.map(plot => ({
+    original: `data:image/png;base64,${plot}`,
+    thumbnail: `data:image/png;base64,${plot}`,
+  })) || [];
 
 
   return (
