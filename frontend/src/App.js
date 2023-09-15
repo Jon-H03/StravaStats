@@ -4,6 +4,7 @@ import './App.css';
 import { MapContainer, TileLayer, Polyline, Popup } from 'react-leaflet';
 import ImageGallery from 'react-image-gallery';
 import LoginPage from './pages/LoginPage';
+import polyline from '@mapbox/polyline';
 import CallbackManager from './components/CallbackManager';
 
 function App() {
