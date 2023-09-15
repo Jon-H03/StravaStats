@@ -86,7 +86,7 @@ function App() {
       <Routes>
           <Route 
           path="/login" 
-          element={isAuthenticated ? <Navigate to="/" /> : <LoginPage setIsLoading={setIsLoading} setIsAuthenticated={setIsAuthenticated} />} />       
+          element={isAuthenticated ? <Navigate to="/" /> : <LoginPage setIsLoading={setIsLoading} setIsAuthenticated={setIsAuthenticated} />} />
           <Route
           path="/callback"
           element={
