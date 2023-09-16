@@ -1,12 +1,12 @@
 import React from 'react';
 import '../App.css';
 
-const LoginPage = ({ setIsLoading, setIsAuthenticating }) => {  // Accept setIsLoading prop
+const LoginPage = ({ setIsLoading, setIsAuthenticated }) => {  // Accept setIsLoading prop
   const handleLogin = () => {
     setIsLoading(true);  // Set the isLoading state to true when attempting to authenticate
-    setIsAuthenticating(true);
+    setIsAuthenticated(true);
     const clientID = "110708";
-    const redirectURI = `https://poetic-capybara-cdaed3.netlify.app/callback`; 
+    const redirectURI = `http://stravastats.s3-website-us-west-1.amazonaws.com/callback`; 
     const responseType = "code";
     const scope = "activity:read_all"; 
 
